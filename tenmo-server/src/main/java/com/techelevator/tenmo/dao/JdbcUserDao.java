@@ -23,7 +23,7 @@ public class JdbcUserDao implements UserDao {
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    //turn username into user_id. maybe (getUserIdByUserName)
     @Override
     public User getUserById(int userId) {
         User user = null;
