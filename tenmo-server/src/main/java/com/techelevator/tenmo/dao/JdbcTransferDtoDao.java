@@ -15,7 +15,7 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         transferDto.setAccountTo(accountToId);
         transferDto.setAmount(amount);
 
-        
+
         return null;
     }
 }

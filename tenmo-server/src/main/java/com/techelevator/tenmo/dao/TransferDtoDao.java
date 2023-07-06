@@ -7,4 +7,5 @@ import java.math.BigDecimal;
 public interface TransferDtoDao {
     TransferDto sendTransfer(int accountToId, BigDecimal amount);
 
+
 }
