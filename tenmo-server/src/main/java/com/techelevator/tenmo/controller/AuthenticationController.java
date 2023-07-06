@@ -26,7 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller to authenticate users.
  */
 @RestController
-public class AuthenticationController {
+public class AuthenticationController  {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;

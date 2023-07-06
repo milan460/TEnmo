@@ -24,10 +24,10 @@ public class JdbcAccountDao implements AccountDao {
     }
 
 
-    @Override
-    public BigDecimal transfer(BigDecimal transferAmount) {
-        return null;
-    }
+//    @Override
+//    public BigDecimal transfer(BigDecimal transferAmount) {
+//        return null;
+//    }
 
     @Override
     public Account getAccountById(int id) {
@@ -39,8 +39,9 @@ public class JdbcAccountDao implements AccountDao {
             if (sqlRowSet.next()) {
                 account = mapToAccount(sqlRowSet);
             } else { throw new NullPointerException("No Account found with this ID"); };
-        } catch (DataAccessException e){
-            throw new DaoException(e.getMessage());
+        }
+        catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
         }
         return account;
     }
@@ -55,8 +56,9 @@ public class JdbcAccountDao implements AccountDao {
             if (sqlRowSet.next()) {
                 account = mapToAccount(sqlRowSet);
             } else { throw new NullPointerException("No Account found with this ID"); };
-        } catch (DataAccessException e){
-            throw new DaoException(e.getMessage());
+        }
+        catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
         }
         return account;
     }
@@ -78,8 +80,8 @@ public class JdbcAccountDao implements AccountDao {
                 userMap.put(sqlRowSet.getInt("account_id"), sqlRowSet.getString("username"));
             }
         }
-        catch(DataAccessException e){
-            throw new DaoException(e.getMessage());
+        catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
         }
         return userMap;
     }

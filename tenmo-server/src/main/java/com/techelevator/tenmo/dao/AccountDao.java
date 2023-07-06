@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface AccountDao {
     //transfer in
-    BigDecimal transfer(BigDecimal transferAmount);
+//    BigDecimal transfer(BigDecimal transferAmount);
 
     //get account by account_id. outputs only one account
     Account getAccountById(int id);
