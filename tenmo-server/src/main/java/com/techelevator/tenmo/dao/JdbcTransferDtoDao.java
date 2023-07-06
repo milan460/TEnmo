@@ -15,6 +15,8 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         transferDto.setAccountTo(accountToId);
         transferDto.setAmount(amount);
 
+        //add exceptions to not send zero or negative amounts
+        //add exception to not be able to send money to myself (make sure the accountFrom ID does not match accountTo ID)
 
         return null;
     }
