@@ -7,19 +7,18 @@ import com.techelevator.tenmo.dao.UserDao;
 
 import com.techelevator.tenmo.model.TransferDto;
 import com.techelevator.tenmo.model.User;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static java.math.BigDecimal.valueOf;
 
 @RestController
+@PreAuthorize("isAuthenticated()")
 public class TransferDtoController {
     private TransferDtoDao transferDtoDao;
     private final UserDao userDao;
@@ -47,19 +46,31 @@ public class TransferDtoController {
         BigDecimal balance = accountDao.getAccountById(user.getId()).getBalance();
         if ((amount.compareTo(balance)==1)){
             throw new IllegalArgumentException("Cannot transfer more money than your current balance");
+        }else {
+
+            TransferDto transferDto = new TransferDto();
+            transferDto.setAccountFrom(user.getId()); // authentication to pull the account ID
+            transferDto.setTransferTypeId(2);
+            transferDto.setTransferStatusId(2);
+            transferDto.setAccountTo(accountToId);
+            transferDto.setAmount(amount);
+
+            transferDtoDao.sendTransfer(transferDto);
         }
-
-        TransferDto transferDto = new TransferDto();
-        transferDto.setAccountFrom(user.getId()); // authentication to pull the account ID
-        transferDto.setTransferTypeId(2);
-        transferDto.setTransferStatusId(2);
-        transferDto.setAccountTo(accountToId);
-        transferDto.setAmount(amount);
-
-        transferDtoDao.sendTransfer(transferDto);
     }
 
     // path /transfers
+    @RequestMapping (path = "/transfers", method = RequestMethod.GET)
+    public List<TransferDto> myTransfers(){
+        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+        User user = userDao.getUserByUsername(authentication.getName());
 
+        int userId= user.getId();
+        return transferDtoDao.getTransfers(userId);
+    }
     // path /transfers/{id}
+    @RequestMapping (path = "/transfers/{id}", method = RequestMethod.GET)
+    public TransferDto getTransfer(@PathVariable int id){
+        return transferDtoDao.getTransferByID(id);
+    }
 }

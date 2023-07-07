@@ -43,6 +43,15 @@ public class JdbcTransferDtoDaoTests extends BaseDaoTests {
         Assert.assertTrue(actual.equals(TRANSFER_1));
     }
 
+//    @Test(expected = IllegalArgumentException.class)
+//    public void sendTransfer_given_amount_over_account_balance(){
+//        BigDecimal bigDecimal = new BigDecimal(999999);
+//        TransferDto expected = new TransferDto(3050, 2, 2, 2003, 2001, bigDecimal);
+//        TransferDto actual = sut.sendTransfer(expected);
+//
+//        Assert.assertNull(actual);
+//    }
+
     @Test(expected = NumberFormatException.class)
     public void sendTransfer_given_null_id_and_null_amount(){
         int idNull = Integer.parseInt(null);
@@ -62,6 +71,16 @@ public class JdbcTransferDtoDaoTests extends BaseDaoTests {
 
         Assert.assertNull(actual);
 
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void sendTransfer_given_null_from_id(){
+        int idNull = Integer.parseInt(null);
+        BigDecimal bigDecimal = new BigDecimal(2);
+        TransferDto expected = new TransferDto(3050, 2, 2, idNull, 2001, bigDecimal);
+        TransferDto actual = sut.sendTransfer(expected);
+
+        Assert.assertNull(actual);
     }
 
 
