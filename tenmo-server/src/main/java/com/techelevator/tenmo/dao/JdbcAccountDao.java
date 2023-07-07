@@ -43,6 +43,9 @@ public class JdbcAccountDao implements AccountDao {
         catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         }
+        catch (NumberFormatException e) {
+            throw new DaoException("Number is not in correct format", e);
+        }
         return account;
     }
 
@@ -59,6 +62,9 @@ public class JdbcAccountDao implements AccountDao {
         }
         catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
+        }
+        catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
         }
         return account;
     }

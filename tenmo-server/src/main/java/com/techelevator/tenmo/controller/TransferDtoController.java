@@ -52,7 +52,7 @@ public class TransferDtoController {
         TransferDto transferDto = new TransferDto();
         transferDto.setAccountFrom(user.getId()); // authentication to pull the account ID
         transferDto.setTransferTypeId(2);
-        transferDto.setTransferStatusId(1);
+        transferDto.setTransferStatusId(2);
         transferDto.setAccountTo(accountToId);
         transferDto.setAmount(amount);
 

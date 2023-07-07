@@ -30,6 +30,9 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         } catch (DataIntegrityViolationException e){
             throw new DaoException("Data Integrity Violation",e);
         }
+        catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
+        }
 
         // decrease the sender's deniro
         String decreaseSql = "UPDATE account SET balance = balance - ? WHERE account_id = ?";
@@ -39,6 +42,9 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
             throw new DaoException("Unable to connect to Server Database",e);
         } catch (DataIntegrityViolationException e){
             throw new DaoException("Data Integrity Violation",e);
+        }
+        catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
         }
 
 
@@ -50,6 +56,9 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
             throw new DaoException("Unable to connect to Server Database",e);
         } catch (DataIntegrityViolationException e){
             throw new DaoException("Data Integrity Violation",e);
+        }
+        catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
         }
 
         return transfer;

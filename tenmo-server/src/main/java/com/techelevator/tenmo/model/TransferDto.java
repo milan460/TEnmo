@@ -16,7 +16,8 @@ public class TransferDto {
 
     }
 
-    public TransferDto(int transferTypeId, int transferStatusId, int accountFrom, int accountTo, BigDecimal amount){
+    public TransferDto(int id, int transferTypeId, int transferStatusId, int accountFrom, int accountTo, BigDecimal amount){
+        this.id = id;
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;
         this.accountFrom = accountFrom;
@@ -94,6 +95,7 @@ public class TransferDto {
         if (this == o) return true;
         if (!(o instanceof TransferDto)) return false;
         TransferDto that = (TransferDto) o;
+        boolean amountEquals = (Amount.compareTo(((TransferDto) o).getAmount()) == 0);
         return id == that.id && transferTypeId == that.transferTypeId && transferStatusId == that.transferStatusId && accountFrom == that.accountFrom && accountTo == that.accountTo && Amount.equals(that.Amount) && transferType.equals(that.transferType);
     }
 

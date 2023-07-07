@@ -56,7 +56,8 @@ public class Account {
         if (this == o) return true;
         if (!(o instanceof Account)) return false;
         Account account = (Account) o;
-        return id == account.id && userId == account.userId && balance.equals(account.balance);
+        boolean balanceEquals = (balance.compareTo(((Account) o).getBalance()) == 0);
+        return id == account.id && userId == account.userId && balanceEquals;
     }
 
     @Override
