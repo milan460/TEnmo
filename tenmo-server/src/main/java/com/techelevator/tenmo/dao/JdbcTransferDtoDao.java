@@ -55,7 +55,7 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         // increase the recipients Mulah
         String increaseSql = "UPDATE account SET balance = balance + ? WHERE account_id = ?";
         try {
-            jdbcTemplate.update(decreaseSql, transferDto.getAmount(),transferDto.getAccountTo());
+            jdbcTemplate.update(increaseSql, transferDto.getAmount(),transferDto.getAccountTo());
         } catch (CannotGetJdbcConnectionException e){
             throw new DaoException("Unable to connect to Server Database",e);
         } catch (DataIntegrityViolationException e){
@@ -97,10 +97,12 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
     public TransferDto getTransferByID(int tId) {
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE transfer_id = ?;";
         SqlRowSet results;
-        TransferDto item;
+        TransferDto item = null;
         try{
-            results =jdbcTemplate.queryForRowSet(sql,tId);
-            item = mapToTransferDto(results);
+            results = jdbcTemplate.queryForRowSet(sql,tId);
+            if(results.next()) {
+                item = mapToTransferDto(results);
+            }
         }
         catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);

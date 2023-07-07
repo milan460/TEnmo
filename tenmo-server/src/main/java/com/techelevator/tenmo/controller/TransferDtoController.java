@@ -5,8 +5,10 @@ import com.techelevator.tenmo.dao.TransferDtoDao;
 import com.techelevator.tenmo.dao.UserDao;
 
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.TransferDto;
 import com.techelevator.tenmo.model.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,26 +32,27 @@ public class TransferDtoController {
         this.accountDao = accountDao;
     }
 
-    @RequestMapping (path = "/Send", method = RequestMethod.POST)
-    public void makeTransfer(@RequestBody int accountToId, @RequestBody BigDecimal amount){
+    @RequestMapping (path = "/send", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void makeTransfer(@RequestParam int accountToId, @RequestParam BigDecimal amount){
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-
         User user = userDao.getUserByUsername(authentication.getName());
 
-        if(user.getId()==accountToId){
+        Account userAccount = accountDao.getAccountByUserId(user.getId());
+        if(userAccount.getId()==accountToId){
             throw new IllegalArgumentException("Cannot send money to yourself");
         }
         BigDecimal zero = BigDecimal.valueOf(0);
         if (!(amount.compareTo(zero) ==1)) {
             throw new IllegalArgumentException("Amount sent must be a non zero positive value");
         }
-        BigDecimal balance = accountDao.getAccountById(user.getId()).getBalance();
+        BigDecimal balance = userAccount.getBalance();
         if ((amount.compareTo(balance)==1)){
             throw new IllegalArgumentException("Cannot transfer more money than your current balance");
         }else {
 
             TransferDto transferDto = new TransferDto();
-            transferDto.setAccountFrom(user.getId()); // authentication to pull the account ID
+            transferDto.setAccountFrom(userAccount.getId()); // authentication to pull the account ID
             transferDto.setTransferTypeId(2);
             transferDto.setTransferStatusId(2);
             transferDto.setAccountTo(accountToId);
@@ -65,8 +68,9 @@ public class TransferDtoController {
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
         User user = userDao.getUserByUsername(authentication.getName());
 
-        int userId= user.getId();
-        return transferDtoDao.getTransfers(userId);
+
+        Account userAccount = accountDao.getAccountByUserId(user.getId());
+        return transferDtoDao.getTransfers(userAccount.getId());
     }
     // path /transfers/{id}
     @RequestMapping (path = "/transfers/{id}", method = RequestMethod.GET)

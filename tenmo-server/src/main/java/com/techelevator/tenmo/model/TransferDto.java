@@ -9,8 +9,7 @@ public class TransferDto {
     private int transferStatusId;
     private int accountFrom;
     private int accountTo;
-    private BigDecimal Amount;
-    private String transferType;
+    private BigDecimal amount;
 
     public TransferDto(){
 
@@ -22,7 +21,7 @@ public class TransferDto {
         this.transferStatusId = transferStatusId;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
-        this.Amount = amount;
+        this.amount = amount;
     }
 
     public int getId() {
@@ -66,16 +65,13 @@ public class TransferDto {
     }
 
     public BigDecimal getAmount() {
-        return Amount;
+        return amount;
     }
 
     public void setAmount(BigDecimal amount) {
-        Amount = amount;
+        this.amount = amount;
     }
 
-    public String getTransferType() {
-        return transferType;
-    }
 
     @Override
     public String toString() {
@@ -85,8 +81,7 @@ public class TransferDto {
                 ", transferStatusId=" + transferStatusId +
                 ", accountFrom=" + accountFrom +
                 ", accountTo=" + accountTo +
-                ", Amount=" + Amount +
-                ", transferType='" + transferType + '\'' +
+                ", amount=" + amount +
                 '}';
     }
 
@@ -95,13 +90,13 @@ public class TransferDto {
         if (this == o) return true;
         if (!(o instanceof TransferDto)) return false;
         TransferDto that = (TransferDto) o;
-        boolean amountEquals = (Amount.compareTo(((TransferDto) o).getAmount()) == 0);
-        return id == that.id && transferTypeId == that.transferTypeId && transferStatusId == that.transferStatusId && accountFrom == that.accountFrom && accountTo == that.accountTo && Amount.equals(that.Amount) && transferType.equals(that.transferType);
+        boolean amountEquals = (amount.compareTo(((TransferDto) o).getAmount()) == 0);
+        return id == that.id && transferTypeId == that.transferTypeId && transferStatusId == that.transferStatusId && accountFrom == that.accountFrom && accountTo == that.accountTo && amount.equals(that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transferTypeId, transferStatusId, accountFrom, accountTo, Amount, transferType);
+        return Objects.hash(id, transferTypeId, transferStatusId, accountFrom, accountTo, amount);
     }
 
     //    private void setTransferType(String transferType) {
