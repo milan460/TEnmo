@@ -194,21 +194,19 @@ public class App {
     }
 
     private void takeAction(){
-
-        int transferId =consoleService.promptForInt("Which transaction ID do you want to take action on?");
+        int transferId =consoleService.promptForInt("Which transaction ID do you want to take action on?  ");
 
         int menuSelection = -1;
 
         while (menuSelection== -1) {
             consoleService.printApproveMenu();
-            menuSelection= consoleService.promptForMenuSelection("Select how you would like to proceed");
+            menuSelection= consoleService.promptForMenuSelection("Select how you would like to proceed:  ");
         }
 
         if (menuSelection == 1){
             boolean isApproved = consoleService.approval();
             if (isApproved){
                 // sent update request with approval status
-                consoleService.printMessage("approving request");
                 accountService.takeActionOnActionableRequest(currentUser, transferId,"approve");
             }
         } else if (menuSelection==2) {

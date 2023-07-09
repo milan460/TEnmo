@@ -44,7 +44,7 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
 
     @Override
     public List<TransferDto> getTransfers(int userID, boolean isPending, boolean isActionable) {
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? OR account_to = ?;";
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE (account_from = ? or account_to = ?) AND NOT (transfer_status_id = 1);";
         if(isPending){
             sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE (account_from = ? or account_to = ?) AND transfer_status_id = 1;";
             if(isActionable){

@@ -66,7 +66,7 @@ public class ConsoleService {
             try {
                 return Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a number.");
+                System.out.println("Please enter a number. ");
             }
         }
     }
@@ -77,7 +77,7 @@ public class ConsoleService {
             try {
                 return new BigDecimal(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a decimal number.");
+                System.out.println("Please enter a decimal number. ");
             }
         }
     }
@@ -120,9 +120,9 @@ public class ConsoleService {
     }
 
     public boolean approval() {
-        String approvalString = promptForString("to confirm, please type 'Approve'").toLowerCase();
+        String approvalString = promptForString("to confirm, please type 'Approve':  ").toLowerCase();
         if (approvalString.equals("approve")){
-            System.out.println("Approved");
+            System.out.println("Approving Request");
             return true;
         } else {
             System.out.println("not approved");
