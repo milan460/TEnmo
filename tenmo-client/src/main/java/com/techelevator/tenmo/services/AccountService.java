@@ -122,7 +122,7 @@ public class AccountService {
             BasicLogger.log(e.getMessage());
         }catch (NullPointerException e){
             BasicLogger.log(e.getMessage());
-            return null;
+            transfer = new Transfer ();
         }
         return transfer;
     }
