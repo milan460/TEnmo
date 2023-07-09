@@ -208,7 +208,9 @@ public class App {
             boolean isApproved = consoleService.approval();
             if (isApproved){
                 // sent update request with approval status
-                accountService.takeActionOnActionableRequest(currentUser, transferId,"approve");
+                if (accountService.takeActionOnActionableRequest(currentUser, transferId,"approve").equals(null)){
+                    consoleService.printMessage("Approval could not be completed.  Balance insufficient.");
+                };
             }
         } else if (menuSelection == SELECT_REJECTION) {
             consoleService.printMessage("Rejecting request");

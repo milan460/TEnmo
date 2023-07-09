@@ -143,7 +143,9 @@ public class TransferDtoController {
         BigDecimal balance = userAccount.getBalance();
         BigDecimal amount = transferDto.getAmount();
         if ((amount.compareTo(balance) == 1)) {
+            transferDto=null;
             throw new IllegalArgumentException("Cannot transfer more money than your current balance");
+
         }else {
         if (approval.equals("approve")){
             statusId=2;
