@@ -120,6 +120,9 @@ public class AccountService {
         }
         catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
+        }catch (NullPointerException e){
+            BasicLogger.log(e.getMessage());
+            return null;
         }
         return transfer;
     }
