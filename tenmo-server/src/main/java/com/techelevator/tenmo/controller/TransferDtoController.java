@@ -87,8 +87,12 @@ public class TransferDtoController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userDao.getUserByUsername(authentication.getName());
         TransferDto transferDto = null;
-
         Account userAccount = accountDao.getAccountByUserId(user.getId());
+        BigDecimal balance = userAccount.getBalance();
+        if ((amount.compareTo(balance) == 1)) {
+            throw new IllegalArgumentException("Cannot transfer more money than your current balance");
+        }
+
         if (userAccount.getId() == accountToId) {
             throw new IllegalArgumentException("Cannot request money from yourself");
         }
@@ -133,8 +137,18 @@ public class TransferDtoController {
 
     @RequestMapping (path = "/transfers/{id}/{approval}", method = RequestMethod.PUT)
     public TransferDto approveRequest (@PathVariable int id, @PathVariable String approval){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDao.getUserByUsername(authentication.getName());
+
         TransferDto transferDto = transferDtoDao.getTransferByID(id);
         int statusId = 0;
+
+        Account userAccount = accountDao.getAccountByUserId(user.getId());
+        BigDecimal balance = userAccount.getBalance();
+        BigDecimal amount = transferDto.getAmount();
+        if ((amount.compareTo(balance) == 1)) {
+            throw new IllegalArgumentException("Cannot transfer more money than your current balance");
+        }else {
         if (approval.equals("approve")){
             statusId=2;
         }else if (approval.equals("reject")){
@@ -143,6 +157,7 @@ public class TransferDtoController {
         if (statusId == 2 || statusId ==3){
             transferDto.setTransferStatusId(statusId);
             transferDto = transferDtoDao.updateTransfer(transferDto);
+        }
         }
         return transferDto;
     }

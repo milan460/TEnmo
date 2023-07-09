@@ -203,19 +203,19 @@ public class App {
             menuSelection= consoleService.promptForMenuSelection("Select how you would like to proceed:  ");
         }
 
-        if (menuSelection == 1){
+        if (menuSelection ==  SELECT_APPROVAL){
             boolean isApproved = consoleService.approval();
             if (isApproved){
                 // sent update request with approval status
                 accountService.takeActionOnActionableRequest(currentUser, transferId,"approve");
             }
-        } else if (menuSelection==2) {
+        } else if (menuSelection == SELECT_REJECTION) {
             consoleService.printMessage("Rejecting request");
             accountService.takeActionOnActionableRequest(currentUser,transferId,"reject");
             // send update request with denial status
-        } else if (menuSelection==0) {
+        } else if (menuSelection == EXIT_APP) {
             consoleService.printMessage("proceeding with exit");
-        }else if (!List.of(1,2,0).contains(menuSelection)){
+        }else if (!List.of(SELECT_APPROVAL, SELECT_REJECTION, EXIT_APP).contains(menuSelection)){
             consoleService.printMessage("invalid selection.  Proceeding with exit");
         }
     }
