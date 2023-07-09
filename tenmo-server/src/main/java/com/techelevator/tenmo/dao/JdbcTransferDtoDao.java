@@ -108,7 +108,7 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
 
         boolean success = false;
         // post the transfer to the transfer table
-        String transferSql = "UPDATE transfer (transfer_status_id) VALUES (?) WHERE transfer_id = ?";
+        String transferSql = "UPDATE transfer SET transfer_status_id = ? WHERE transfer_id = ?";
         try {
             jdbcTemplate.update(transferSql,transferDto.getTransferStatusId(), transferDto.getId());
         } catch (CannotGetJdbcConnectionException e){
