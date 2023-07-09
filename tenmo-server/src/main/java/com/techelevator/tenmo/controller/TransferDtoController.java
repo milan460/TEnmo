@@ -98,10 +98,10 @@ public class TransferDtoController {
         } else {
 
             transferDto = new TransferDto();
-            transferDto.setAccountFrom(userAccount.getId()); // authentication to pull the account ID
+            transferDto.setAccountFrom(accountToId); // authentication to pull the account ID
             transferDto.setTransferTypeId(1);
             transferDto.setTransferStatusId(1);
-            transferDto.setAccountTo(accountToId);
+            transferDto.setAccountTo(userAccount.getId());
             transferDto.setAmount(amount);
 
             transferDtoDao.transfer(transferDto);
