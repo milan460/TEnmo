@@ -88,10 +88,6 @@ public class TransferDtoController {
         User user = userDao.getUserByUsername(authentication.getName());
         TransferDto transferDto = null;
         Account userAccount = accountDao.getAccountByUserId(user.getId());
-        BigDecimal balance = userAccount.getBalance();
-        if ((amount.compareTo(balance) == 1)) {
-            throw new IllegalArgumentException("Cannot transfer more money than your current balance");
-        }
 
         if (userAccount.getId() == accountToId) {
             throw new IllegalArgumentException("Cannot request money from yourself");

@@ -166,8 +166,9 @@ public class App {
 
         if(transferId == 0){
             consoleService.printErrorMessage();
+        } else {
+            consoleService.printMessage("Request Made! Now awaiting approval! TransferId: " + transferId);
         }
-        consoleService.printMessage("Request Made! Now awaiting approval! TransferId: " + transferId);
     }
 
     private void viewActionableRequests() {
