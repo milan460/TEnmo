@@ -72,11 +72,11 @@ public class Transfer {
     }
 
     public String getTransferType(){
-        if(this.getTransferStatusId() == 1){
-            return "Request";
+        if(this.getTransferTypeId()==2){
+            return "Send";
         }
         else{
-            return "Send";
+            return "Request";
         }
     }
 
