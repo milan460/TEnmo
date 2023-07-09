@@ -10,9 +10,9 @@ import java.util.List;
 
 
 public interface TransferDtoDao {
-    TransferDto sendTransfer(TransferDto transferDto);
+    TransferDto transfer(TransferDto transferDto);
 
-    List<TransferDto> getTransfers(int userID);
+    List<TransferDto> getTransfers(int userID, boolean isPending, boolean isActionable);
 
     TransferDto getTransferByID(int tId);
 

@@ -22,9 +22,9 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
     }
 
     @Override
-    public TransferDto sendTransfer(TransferDto transferDto) {
+    public TransferDto transfer(TransferDto transferDto) {
         TransferDto transfer = transferDto;
-
+        boolean success = false;
         // post the transfer to the transfer table
         String transferSql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (?, ?, ?, ?, ?) RETURNING transfer_id";
         try {
@@ -37,44 +37,30 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         catch (NumberFormatException e){
             throw new DaoException("Number is not in correct format", e);
         }
-
-        // decrease the sender's deniro
-        String decreaseSql = "UPDATE account SET balance = balance - ? WHERE account_id = ?";
-        try {
-            jdbcTemplate.update(decreaseSql, transferDto.getAmount(),transferDto.getAccountFrom());
-        } catch (CannotGetJdbcConnectionException e){
-            throw new DaoException("Unable to connect to Server Database",e);
-        } catch (DataIntegrityViolationException e){
-            throw new DaoException("Data Integrity Violation",e);
+        if(transfer.getTransferStatusId() == 2) {
+            success = moveMoney(transferDto);
         }
-        catch (NumberFormatException e){
-            throw new DaoException("Number is not in correct format", e);
-        }
-
-
-        // increase the recipients Mulah
-        String increaseSql = "UPDATE account SET balance = balance + ? WHERE account_id = ?";
-        try {
-            jdbcTemplate.update(increaseSql, transferDto.getAmount(),transferDto.getAccountTo());
-        } catch (CannotGetJdbcConnectionException e){
-            throw new DaoException("Unable to connect to Server Database",e);
-        } catch (DataIntegrityViolationException e){
-            throw new DaoException("Data Integrity Violation",e);
-        }
-        catch (NumberFormatException e){
-            throw new DaoException("Number is not in correct format", e);
-        }
-
         return transfer;
     }
 
     @Override
-    public List<TransferDto> getTransfers(int userID) {
+    public List<TransferDto> getTransfers(int userID, boolean isPending, boolean isActionable) {
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? OR account_to = ?;";
+        if(isPending){
+            sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? OR account_to = ? AND transfer_status_id = 1;";
+            if(isActionable){
+               sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? AND transfer_status_id = 1;";
+            }
+        }
         SqlRowSet results;
         List<TransferDto> listy=new ArrayList<>();
         try{
-            results =jdbcTemplate.queryForRowSet(sql,userID,userID);
+            if(isPending && isActionable) {
+                results = jdbcTemplate.queryForRowSet(sql, userID);
+            }
+            else {
+                results = jdbcTemplate.queryForRowSet(sql, userID, userID);
+            }
             while(results.next()){
                 TransferDto item = mapToTransferDto(results);
                 listy.add(item);
@@ -115,6 +101,38 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         }
 
         return item;
+    }
+
+
+    private boolean moveMoney(TransferDto transferDto){
+
+        String decreaseSql = "UPDATE account SET balance = balance - ? WHERE account_id = ?";
+        try {
+            jdbcTemplate.update(decreaseSql, transferDto.getAmount(),transferDto.getAccountFrom());
+        } catch (CannotGetJdbcConnectionException e){
+            throw new DaoException("Unable to connect to Server Database",e);
+        } catch (DataIntegrityViolationException e){
+            throw new DaoException("Data Integrity Violation",e);
+        }
+        catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
+        }
+
+
+        // increase the recipients Mulah
+        String increaseSql = "UPDATE account SET balance = balance + ? WHERE account_id = ?";
+        try {
+            jdbcTemplate.update(increaseSql, transferDto.getAmount(),transferDto.getAccountTo());
+        } catch (CannotGetJdbcConnectionException e){
+            throw new DaoException("Unable to connect to Server Database",e);
+        } catch (DataIntegrityViolationException e){
+            throw new DaoException("Data Integrity Violation",e);
+        }
+        catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
+        }
+
+        return true;
     }
 
     private TransferDto mapToTransferDto (SqlRowSet results){

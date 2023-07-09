@@ -26,55 +26,108 @@ public class TransferDtoController {
     private final UserDao userDao;
     private final AccountDao accountDao;
 
-    public TransferDtoController(TransferDtoDao transferDtoDao, UserDao userDao, AccountDao accountDao){
+    public TransferDtoController(TransferDtoDao transferDtoDao, UserDao userDao, AccountDao accountDao) {
         this.transferDtoDao = transferDtoDao;
         this.userDao = userDao;
         this.accountDao = accountDao;
     }
 
-    @RequestMapping (path = "/send", method = RequestMethod.POST)
+    @RequestMapping(path = "/send", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void makeTransfer(@RequestParam int accountToId, @RequestParam BigDecimal amount){
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+    public int makeTransfer(@RequestParam int accountToId, @RequestParam BigDecimal amount) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userDao.getUserByUsername(authentication.getName());
+        TransferDto transferDto = null;
 
         Account userAccount = accountDao.getAccountByUserId(user.getId());
-        if(userAccount.getId()==accountToId){
+        if (userAccount.getId() == accountToId) {
             throw new IllegalArgumentException("Cannot send money to yourself");
         }
         BigDecimal zero = BigDecimal.valueOf(0);
-        if (!(amount.compareTo(zero) ==1)) {
+        if (!(amount.compareTo(zero) == 1)) {
             throw new IllegalArgumentException("Amount sent must be a non zero positive value");
         }
         BigDecimal balance = userAccount.getBalance();
-        if ((amount.compareTo(balance)==1)){
+        if ((amount.compareTo(balance) == 1)) {
             throw new IllegalArgumentException("Cannot transfer more money than your current balance");
-        }else {
+        } else {
 
-            TransferDto transferDto = new TransferDto();
+            transferDto = new TransferDto();
             transferDto.setAccountFrom(userAccount.getId()); // authentication to pull the account ID
             transferDto.setTransferTypeId(2);
             transferDto.setTransferStatusId(2);
             transferDto.setAccountTo(accountToId);
             transferDto.setAmount(amount);
 
-            transferDtoDao.sendTransfer(transferDto);
+            transferDtoDao.transfer(transferDto);
         }
+
+        return transferDto.getId();
     }
 
-    // path /transfers
-    @RequestMapping (path = "/transfers", method = RequestMethod.GET)
-    public List<TransferDto> myTransfers(){
-        Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+
+    @RequestMapping(path = "/transfers", method = RequestMethod.GET)
+    public List<TransferDto> myTransfers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userDao.getUserByUsername(authentication.getName());
 
 
         Account userAccount = accountDao.getAccountByUserId(user.getId());
-        return transferDtoDao.getTransfers(userAccount.getId());
+        return transferDtoDao.getTransfers(userAccount.getId(), false, false);
     }
-    // path /transfers/{id}
-    @RequestMapping (path = "/transfers/{id}", method = RequestMethod.GET)
-    public TransferDto getTransfer(@PathVariable int id){
+
+    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
+    public TransferDto getTransfer(@PathVariable int id) {
         return transferDtoDao.getTransferByID(id);
+    }
+
+    @RequestMapping(path = "/request", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public int requestTransfer(@RequestParam int accountToId, @RequestParam BigDecimal amount) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDao.getUserByUsername(authentication.getName());
+        TransferDto transferDto = null;
+
+        Account userAccount = accountDao.getAccountByUserId(user.getId());
+        if (userAccount.getId() == accountToId) {
+            throw new IllegalArgumentException("Cannot request money from yourself");
+        }
+        BigDecimal zero = BigDecimal.valueOf(0);
+        if (!(amount.compareTo(zero) == 1)) {
+            throw new IllegalArgumentException("Amount sent must be a non zero positive value");
+        } else {
+
+            transferDto = new TransferDto();
+            transferDto.setAccountFrom(userAccount.getId()); // authentication to pull the account ID
+            transferDto.setTransferTypeId(1);
+            transferDto.setTransferStatusId(1);
+            transferDto.setAccountTo(accountToId);
+            transferDto.setAmount(amount);
+
+            transferDtoDao.transfer(transferDto);
+        }
+
+
+        return transferDto.getId();
+    }
+
+    @RequestMapping(path = "/transfers/pending", method = RequestMethod.GET)
+    public List<TransferDto> myPendingTransfers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDao.getUserByUsername(authentication.getName());
+
+
+        Account userAccount = accountDao.getAccountByUserId(user.getId());
+        return transferDtoDao.getTransfers(userAccount.getId(), true, false);
+    }
+
+    @RequestMapping(path = "/transfers/actionable", method = RequestMethod.GET)
+    public List<TransferDto> myActionableTransfers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDao.getUserByUsername(authentication.getName());
+
+
+        Account userAccount = accountDao.getAccountByUserId(user.getId());
+        return transferDtoDao.getTransfers(userAccount.getId(), true, true);
     }
 }

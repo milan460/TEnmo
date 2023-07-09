@@ -4,6 +4,7 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -47,7 +48,7 @@ public class ConsoleService {
     }
 
     public UserCredentials promptForCredentials() {
-        String username = promptForString("Username: ");
+        String username = promptForString("Username: ").toLowerCase();
         String password = promptForString("Password: ");
         return new UserCredentials(username, password);
     }
@@ -90,6 +91,11 @@ public class ConsoleService {
 
     public void printMessage(String message) {
         System.out.println(message);
+    }
+
+    public void printUserAccountBalance(BigDecimal balance){
+        System.out.print("Here is your current balance: ");
+        System.out.println(balance);
     }
 
 
