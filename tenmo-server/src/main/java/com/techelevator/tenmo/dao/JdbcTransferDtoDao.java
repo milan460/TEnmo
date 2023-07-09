@@ -46,7 +46,7 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
     public List<TransferDto> getTransfers(int userID, boolean isPending, boolean isActionable) {
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? OR account_to = ?;";
         if(isPending){
-            sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? AND transfer_status_id = 1 OR account_to = ? AND transfer_status_id = 1;";
+            sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE (account_from || account_to = ?) AND transfer_status_id = 1;";
             if(isActionable){
                sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer WHERE account_from = ? AND transfer_status_id = 1;";
             }
@@ -54,7 +54,8 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         SqlRowSet results;
         List<TransferDto> listy=new ArrayList<>();
         try{
-            if(isPending && isActionable) {
+            //if(isPending && isActionable) {
+            if(isPending) {
                 results = jdbcTemplate.queryForRowSet(sql, userID);
             }
             else {
