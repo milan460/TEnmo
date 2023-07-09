@@ -76,5 +76,40 @@ public class AccountService {
         headers.setBearerAuth(authenticatedUser.getToken());
         return new HttpEntity<>(headers);
     }
+    public int requestMoney(AuthenticatedUser authenticatedUser, int accountToId, BigDecimal amount){
+        int transferId = 0;
+        try{
+            ResponseEntity<Integer> response = restTemplate.exchange(baseUrl + "request?accountToId=" + accountToId + "&amount=" + amount, HttpMethod.POST, makeAuthToken(authenticatedUser), int.class);
+            transferId = response.getBody();
+        }
+        catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transferId;
+    }
+
+    public Transfer[] getPendingTransfers(AuthenticatedUser authenticatedUser){
+        Transfer[] myTransferArray = null;
+        try{
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers/pending", HttpMethod.GET, makeAuthToken(authenticatedUser), Transfer[].class);
+            myTransferArray = response.getBody();
+        }
+        catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return myTransferArray;
+    }
+
+    public Transfer[] getActionableTransfers(AuthenticatedUser authenticatedUser){
+        Transfer[] myTransferArray = null;
+        try{
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers/actionable", HttpMethod.GET, makeAuthToken(authenticatedUser), Transfer[].class);
+            myTransferArray = response.getBody();
+        }
+        catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return myTransferArray;
+    }
 
 }

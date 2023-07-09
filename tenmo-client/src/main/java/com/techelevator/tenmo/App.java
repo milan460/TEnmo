@@ -20,8 +20,9 @@ public class App {
     public static final int VIEW_CURRENT_BALANCE = 1;
     public static final int VIEW_PAST_TRANSFERS = 2;
     public static final int VIEW_PENDING_REQUESTS = 3;
-    public static final int SEND_TE_BUCKS = 4;
-    public static final int REQUEST_TE_BUCKS = 5;
+    public static final int VIEW_ACTIONABLE_REQUESTS = 4;
+    public static final int SEND_TE_BUCKS = 5;
+    public static final int REQUEST_TE_BUCKS = 6;
     public static final int REGISTER_USER = 1;
     public static final int LOGIN_USER = 2;
 
@@ -44,7 +45,7 @@ public class App {
         if (currentUser != null) {
             // TODO: Instantiate services that require the current user to exist here
             viewCurrentBalance();
-
+            countActionableRequests();
             mainMenu();
 
         }
@@ -94,6 +95,8 @@ public class App {
                 viewTransferHistory();
             } else if (menuSelection == VIEW_PENDING_REQUESTS) {
                 viewPendingRequests();
+            } else if (menuSelection == VIEW_ACTIONABLE_REQUESTS) {
+                viewActionableRequests();
             } else if (menuSelection == SEND_TE_BUCKS) {
                 sendBucks();
             } else if (menuSelection == REQUEST_TE_BUCKS) {
@@ -118,14 +121,16 @@ public class App {
         Transfer[] myTransferArray = accountService.getMyTransfers(currentUser);
         for( Transfer myTransfer : myTransferArray){
             consoleService.printMessage("TransferId: " + myTransfer.getId() + " |  Transfer type: " + myTransfer.getTransferType() + " |  Transfer Status: " + myTransfer.getStatus() + " |  from AccountId: " + myTransfer.getAccountFrom() + " |  to AccountId: " + myTransfer.getAccountTo() + " |  Amount: " + myTransfer.getAmount());
-
         }
 
     }
 
     private void viewPendingRequests() {
         // TODO Auto-generated method stub
-
+        Transfer[] myTransferArray = accountService.getPendingTransfers(currentUser);
+        for( Transfer myTransfer : myTransferArray){
+            consoleService.printMessage("TransferId: " + myTransfer.getId() + " |  Transfer type: " + myTransfer.getTransferType() + " |  Transfer Status: " + myTransfer.getStatus() + " |  from AccountId: " + myTransfer.getAccountFrom() + " |  to AccountId: " + myTransfer.getAccountTo() + " |  Amount: " + myTransfer.getAmount());
+        }
     }
 
     private void sendBucks() {
@@ -148,7 +153,41 @@ public class App {
 
     private void requestBucks() {
         // TODO Auto-generated method stub
+        int transferId = 0;
+        Map<String, Integer> mapOfAccounts = accountService.getListOfAccounts(currentUser);
+        for(Map.Entry<String, Integer> entry: mapOfAccounts.entrySet()){
+            consoleService.printMessage("UserName: " + entry.getValue() + ", AccountId: " + entry.getKey());
+        }
+        int accountToId = consoleService.promptForInt("Enter AccountId you want to Request TEbucks from: " );
+        BigDecimal amount = consoleService.promptForBigDecimal("Enter the amount you want to request: ");
 
+        transferId = accountService.requestMoney(currentUser, accountToId, amount);
+
+        if(transferId == 0){
+            consoleService.printErrorMessage();
+        }
+        consoleService.printMessage("Transfer Completed! TransferId: " + transferId);
+    }
+
+    private void viewActionableRequests() {
+        // TODO Not an Auto-generated method stub
+        Transfer[] myTransferArray = accountService.getActionableTransfers(currentUser);
+        if (myTransferArray.length==0){
+            consoleService.printMessage("You have no actionable requests at this time.");
+        } else {
+            for (Transfer myTransfer : myTransferArray) {
+                consoleService.printMessage("TransferId: " + myTransfer.getId() + " |  Transfer type: " + myTransfer.getTransferType() + " |  Transfer Status: " + myTransfer.getStatus() + " |  from AccountId: " + myTransfer.getAccountFrom() + " |  to AccountId: " + myTransfer.getAccountTo() + " |  Amount: " + myTransfer.getAmount());
+
+                // approve or reject requests
+            }
+        }
+    }
+    private void countActionableRequests() {
+        Transfer[] myTransferArray = accountService.getActionableTransfers(currentUser);
+        int count= myTransferArray.length;
+        if (count !=0) {
+            System.out.println("You have " + count + " requests to take action on");
+        }
     }
 
 }
