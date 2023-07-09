@@ -54,8 +54,8 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         SqlRowSet results;
         List<TransferDto> listy=new ArrayList<>();
         try{
-            //if(isPending && isActionable) {
-            if(isPending) {
+            if(isPending && isActionable) {
+
                 results = jdbcTemplate.queryForRowSet(sql, userID);
             }
             else {
