@@ -25,7 +25,8 @@ public class App {
     public static final int REQUEST_TE_BUCKS = 6;
     public static final int REGISTER_USER = 1;
     public static final int LOGIN_USER = 2;
-
+    public static final int SELECT_APPROVAL = 1;
+    public static final int SELECT_REJECTION = 2;
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
@@ -166,7 +167,7 @@ public class App {
         if(transferId == 0){
             consoleService.printErrorMessage();
         }
-        consoleService.printMessage("Transfer Completed! TransferId: " + transferId);
+        consoleService.printMessage("Request Made! Now awaiting approval! TransferId: " + transferId);
     }
 
     private void viewActionableRequests() {
@@ -177,8 +178,9 @@ public class App {
         } else {
             for (Transfer myTransfer : myTransferArray) {
                 consoleService.printMessage("TransferId: " + myTransfer.getId() + " |  Transfer type: " + myTransfer.getTransferType() + " |  Transfer Status: " + myTransfer.getStatus() + " |  from AccountId: " + myTransfer.getAccountFrom() + " |  to AccountId: " + myTransfer.getAccountTo() + " |  Amount: " + myTransfer.getAmount());
-
-                // approve or reject requests
+            }
+            if(consoleService.takeAction()){
+                takeAction();
             }
         }
     }
@@ -187,6 +189,36 @@ public class App {
         int count= myTransferArray.length;
         if (count !=0) {
             System.out.println("You have " + count + " requests to take action on");
+
+        }
+    }
+
+    private void takeAction(){
+
+        int transferId =consoleService.promptForInt("Which transaction ID do you want to take action on?");
+
+        int menuSelection = -1;
+
+        while (menuSelection== -1) {
+            consoleService.printApproveMenu();
+            menuSelection= consoleService.promptForMenuSelection("Select how you would like to proceed");
+        }
+
+        if (menuSelection == 1){
+            boolean isApproved = consoleService.approval();
+            if (isApproved){
+                // sent update request with approval status
+                consoleService.printMessage("approving request");
+                accountService.takeActionOnActionableRequest(currentUser, transferId,"approve");
+            }
+        } else if (menuSelection==2) {
+            consoleService.printMessage("Rejecting request");
+            accountService.takeActionOnActionableRequest(currentUser,transferId,"reject");
+            // send update request with denial status
+        } else if (menuSelection==0) {
+            consoleService.printMessage("proceeding with exit");
+        }else if (!List.of(1,2,0).contains(menuSelection)){
+            consoleService.printMessage("invalid selection.  Proceeding with exit");
         }
     }
 

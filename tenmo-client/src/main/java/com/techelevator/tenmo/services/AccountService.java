@@ -112,4 +112,16 @@ public class AccountService {
         return myTransferArray;
     }
 
+    public Transfer takeActionOnActionableRequest(AuthenticatedUser authenticatedUser,int transactionId, String approvalStatus){
+        Transfer transfer=null;
+        try{
+            ResponseEntity<Transfer> response = restTemplate.exchange(baseUrl + "transfers/"+transactionId+"/"+approvalStatus, HttpMethod.PUT, makeAuthToken(authenticatedUser), Transfer.class);
+            transfer = response.getBody();
+        }
+        catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return transfer;
+    }
+
 }

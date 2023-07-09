@@ -103,6 +103,27 @@ public class JdbcTransferDtoDao implements TransferDtoDao {
         return item;
     }
 
+    @Override
+    public TransferDto updateTransfer(TransferDto transferDto) {
+
+        boolean success = false;
+        // post the transfer to the transfer table
+        String transferSql = "UPDATE transfer (transfer_status_id) VALUES (?) WHERE transfer_id = ?";
+        try {
+            jdbcTemplate.update(transferSql,transferDto.getTransferStatusId(), transferDto.getId());
+        } catch (CannotGetJdbcConnectionException e){
+            throw new DaoException("Unable to connect to Server Database",e);
+        } catch (DataIntegrityViolationException e){
+            throw new DaoException("Data Integrity Violation",e);
+        } catch (NumberFormatException e){
+            throw new DaoException("Number is not in correct format", e);
+        }
+        if(transferDto.getTransferStatusId() == 2) {
+            success = moveMoney(transferDto);
+        }
+        return transferDto;
+    }
+
 
     private boolean moveMoney(TransferDto transferDto){
 

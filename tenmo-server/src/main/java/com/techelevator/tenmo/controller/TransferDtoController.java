@@ -130,4 +130,20 @@ public class TransferDtoController {
         Account userAccount = accountDao.getAccountByUserId(user.getId());
         return transferDtoDao.getTransfers(userAccount.getId(), true, true);
     }
+
+    @RequestMapping (path = "/transfers/{id}/{approval}", method = RequestMethod.PUT)
+    public TransferDto approveRequest (@PathVariable int id, @PathVariable String approval){
+        TransferDto transferDto = transferDtoDao.getTransferByID(id);
+        int statusId = 0;
+        if (approval.equals("approve")){
+            statusId=2;
+        }else if (approval.equals("reject")){
+            statusId=3;
+        }
+        if (statusId == 2 || statusId ==3){
+            transferDto.setTransferStatusId(statusId);
+            transferDto = transferDtoDao.updateTransfer(transferDto);
+        }
+        return transferDto;
+    }
 }

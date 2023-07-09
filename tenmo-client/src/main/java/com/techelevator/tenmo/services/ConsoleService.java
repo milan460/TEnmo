@@ -4,6 +4,7 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -97,6 +98,44 @@ public class ConsoleService {
     public void printUserAccountBalance(BigDecimal balance){
         System.out.print("Here is your current balance: ");
         System.out.println(balance);
+    }
+
+    public boolean takeAction() {
+        boolean action = false;
+        for (int i=0;true;i++){
+            String response = promptForString("Do you wish to take action on any requests? (y/n): ").toLowerCase();
+            if (response.equals("y") || response.equals("yes")) {
+                action = true;
+            }
+            if (!List.of("y", "yes", "n", "no").contains(response)) {
+                System.out.println("invalid response");
+                if (i<3) {
+                    continue;
+                }
+                System.out.println("Cancelling action");
+            }
+            break;
+        }
+        return action;
+    }
+
+    public boolean approval() {
+        String approvalString = promptForString("to confirm, please type 'Approve'").toLowerCase();
+        if (approvalString.equals("approve")){
+            System.out.println("Approved");
+            return true;
+        } else {
+            System.out.println("not approved");
+            return false;
+        }
+    }
+
+    public void printApproveMenu() {
+        System.out.println();
+        System.out.println("1: Approve");
+        System.out.println("2: Reject");
+        System.out.println("0: Exit");
+        System.out.println();
     }
 
 

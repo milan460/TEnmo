@@ -16,4 +16,6 @@ public interface TransferDtoDao {
 
     TransferDto getTransferByID(int tId);
 
+    TransferDto updateTransfer(TransferDto transferDto);
+
 }
