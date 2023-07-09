@@ -93,5 +93,14 @@ public class Transfer {
         return Objects.hash(id, transferTypeId, transferStatusId, accountFrom, accountTo, amount);
     }
 
+    public void setBlank(){
+        this.setId(0);
+        this.setTransferTypeId(0);
+        this.setTransferStatusId(0);
+        this.setAccountFrom(0);
+        this.setAccountTo(0);
+        this.setAmount(BigDecimal.valueOf(0.00));
+    }
+
 
 }

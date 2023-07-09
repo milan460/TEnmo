@@ -114,6 +114,7 @@ public class AccountService {
 
     public Transfer takeActionOnActionableRequest(AuthenticatedUser authenticatedUser,int transactionId, String approvalStatus){
         Transfer transfer=null;
+        transfer.setBlank();
         try{
             ResponseEntity<Transfer> response = restTemplate.exchange(baseUrl + "transfers/"+transactionId+"/"+approvalStatus, HttpMethod.PUT, makeAuthToken(authenticatedUser), Transfer.class);
             transfer = response.getBody();
@@ -122,7 +123,6 @@ public class AccountService {
             BasicLogger.log(e.getMessage());
         }catch (NullPointerException e){
             BasicLogger.log(e.getMessage());
-            transfer = new Transfer ();
         }
         return transfer;
     }

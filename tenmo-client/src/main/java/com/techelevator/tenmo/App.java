@@ -208,8 +208,9 @@ public class App {
             boolean isApproved = consoleService.approval();
             if (isApproved){
                 // sent update request with approval status
-                Transfer empty = new Transfer();
-                if (accountService.takeActionOnActionableRequest(currentUser, transferId,"approve").equals(empty)){
+                Transfer emptyTransfer = new Transfer();
+                emptyTransfer.setBlank();
+                if (accountService.takeActionOnActionableRequest(currentUser, transferId,"approve").equals(emptyTransfer)){
                     consoleService.printMessage("Approval could not be completed.  Balance insufficient.");
                 };
             }
