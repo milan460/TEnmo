@@ -113,7 +113,7 @@ public class AccountService {
     }
 
     public Transfer takeActionOnActionableRequest(AuthenticatedUser authenticatedUser,int transactionId, String approvalStatus){
-        Transfer transfer=null;
+        Transfer transfer= new Transfer();
         transfer.setBlank();
         try{
             ResponseEntity<Transfer> response = restTemplate.exchange(baseUrl + "transfers/"+transactionId+"/"+approvalStatus, HttpMethod.PUT, makeAuthToken(authenticatedUser), Transfer.class);
