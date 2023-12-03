@@ -1,6 +1,24 @@
-# Module 2 Capstone - TEnmo
+# TEnmo
 
-Congratulations—you've landed a job with TEnmo, whose product is an online payment service for transferring "TE bucks" between friends. However, they don't have a product yet. You've been tasked with writing a RESTful API server and command-line application.
+## Screenshots
+Home Page
+![HomePage](https://github.com/milan460/TEnmo/assets/84365836/962f4428-4877-4258-a605-e8547dc41700)
+Registration Screen
+![RegistrationScreen](https://github.com/milan460/TEnmo/assets/84365836/7c24aac8-5448-4323-8d99-01be747630e7)
+Account Home Screen
+![Account Home Screen](https://github.com/milan460/TEnmo/assets/84365836/fdcbe7c1-9864-4d79-b2d9-e3dc66108cdc)
+View Current Balance
+![View Current Balance](https://github.com/milan460/TEnmo/assets/84365836/cde493a9-60df-4e0b-a7f9-66cdea6291c2)
+Send TE Bucks Action
+![Send TE Bucks](https://github.com/milan460/TEnmo/assets/84365836/19ecc204-a4c1-4f26-92be-563ec0fb4593)
+Request TE Bucks Action
+![Request TE Bucks](https://github.com/milan460/TEnmo/assets/84365836/902d16aa-11c0-4752-85ed-2a267225daaa)
+View Past Transfers
+![Past Transfer](https://github.com/milan460/TEnmo/assets/84365836/05f0faf0-e2fa-48c3-9cd1-b27e62f2aa85)
+View Pending Requests
+![Pending Requests](https://github.com/milan460/TEnmo/assets/84365836/9adf0218-5326-40d7-8e54-4187413f6a9f)
+View Requests Actions
+![Request Approval](https://github.com/milan460/TEnmo/assets/84365836/eb7e8dce-d933-4864-97a9-e402c82dce16)
 
 ## Use cases
 
