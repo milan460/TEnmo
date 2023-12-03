@@ -137,8 +137,13 @@ public class App {
     private void sendBucks() {
         // TODO Auto-generated method stub
         int transferId = 0;
+        Account myAccount = accountService.getUserAccount(currentUser);
         Map<String, Integer> mapOfAccounts = accountService.getListOfAccounts(currentUser);
         for(Map.Entry<String, Integer> entry: mapOfAccounts.entrySet()){
+            Integer AccountId = Integer.parseInt(entry.getKey());
+            if(AccountId.equals(myAccount.getId())){
+                continue;
+            }
             consoleService.printMessage("UserName: " + entry.getValue() + ", AccountId: " + entry.getKey());
         }
         int accountToId = consoleService.promptForInt("Enter AccountId you want to send TEbucks to: " );
@@ -155,8 +160,13 @@ public class App {
     private void requestBucks() {
         // TODO Auto-generated method stub
         int transferId = 0;
+        Account myAccount = accountService.getUserAccount(currentUser);
         Map<String, Integer> mapOfAccounts = accountService.getListOfAccounts(currentUser);
         for(Map.Entry<String, Integer> entry: mapOfAccounts.entrySet()){
+            Integer AccountId = Integer.parseInt(entry.getKey());
+            if(AccountId.equals(myAccount.getId())){
+                continue;
+            }
             consoleService.printMessage("UserName: " + entry.getValue() + ", AccountId: " + entry.getKey());
         }
         int accountToId = consoleService.promptForInt("Enter AccountId you want to Request TEbucks from: " );
